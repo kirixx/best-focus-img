@@ -65,9 +65,16 @@ def findFocus(imagePathName,showPlot):
 
 def showBestFocusImage(bestGradientValue):
     print('\nbest focus image ')
-    findFocus(images[bestGradientValue])
     img = cv2.imread(images[bestGradientValue])
     cv2.imshow('Best Focus Image',img)
+    findFocus(images[bestGradientValue],True)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
+def detectBestFocusImage(event):
+    minGradientAmplValue = next(iter(images.keys()))
+    for key in images.keys():
+        if key <= minGradientAmplValue:
+            minGradientAmplValue = key
+            showBestFocusImage(minGradientAmplValue)
+bestBtn.on_clicked(detectBestFocusImage)
