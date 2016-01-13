@@ -12,33 +12,29 @@ home = NavigationToolbar2.home
 forward = NavigationToolbar2.forward
 back = NavigationToolbar2.back
 
-resetax = plt.axes([0.8, 0.025, 0.1, 0.04])
-button = Button(resetax, 'Reset', color='lightgoldenrodyellow', hovercolor='0.975')
+nextAx = plt.axes([0.8, 0.025, 0.1, 0.04])
+nextBtn = Button(nextAx, 'Next>', color='lightgoldenrodyellow', hovercolor='0.975')
+backAx = plt.axes([0.7, 0.025, 0.1, 0.04])
+backBtn = Button(backAx, '<Back', color='lightgoldenrodyellow', hovercolor='0.975')
+bestAx = plt.axes([0.2, 0.025, 0.12, 0.04])
+bestBtn = Button(bestAx, 'Best Focus', color='lightgoldenrodyellow', hovercolor='0.975')
 
 
-def newBack(self, *args, **kwargs):
+def newBack(event):
     global counter
     if counter != 0:
         counter -= 1
         print(counter)
         findFocus(imageNames[counter],True)    
-        back(self, *args, **kwargs)
+backBtn.on_clicked(newBack) 
         
-def newForward(self, *args, **kwargs):
+def newForward(event):
     global counter
     if counter != len(imageNames)-1:
         counter += 1
         print(counter)
         findFocus(imageNames[counter],True)   
-        forward(self, *args, **kwargs)
-
-def newHome(self, *args, **kwargs):
-    findFocus(imageNames[0],True)
-    home(self, *args, **kwargs)
-
-NavigationToolbar2.home = newHome
-NavigationToolbar2.forward = newForward
-NavigationToolbar2.back = newBack
+nextBtn.on_clicked(newForward)
 
 
 def findFocus(imagePathName,showPlot):
@@ -67,11 +63,6 @@ def findFocus(imagePathName,showPlot):
         return gradientAmplValue
     
 
-    
-
-
-
-
 def showBestFocusImage(bestGradientValue):
     print('\nbest focus image ')
     findFocus(images[bestGradientValue])
@@ -79,4 +70,4 @@ def showBestFocusImage(bestGradientValue):
     cv2.imshow('Best Focus Image',img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-button.on_clicked(showBestFocusImage)
+
