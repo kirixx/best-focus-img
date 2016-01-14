@@ -1,16 +1,13 @@
 ﻿import numpy as np
 import cv2
 from matplotlib import pyplot as plt
-from matplotlib.backend_bases import NavigationToolbar2
 from matplotlib.widgets import Button
 import sys
 
 images = {}
 imageNames = []
 counter = 0
-home = NavigationToolbar2.home
-forward = NavigationToolbar2.forward
-back = NavigationToolbar2.back
+
 
 nextAx = plt.axes([0.8, 0.025, 0.1, 0.04])
 nextBtn = Button(nextAx, 'Next>', color='lightgoldenrodyellow', hovercolor='0.975')
@@ -27,6 +24,7 @@ def newBack(event):
         print(counter)
         findFocus(imageNames[counter],True)    
 backBtn.on_clicked(newBack) 
+
         
 def newForward(event):
     global counter
@@ -44,9 +42,7 @@ def findFocus(imagePathName,showPlot = False):
     sobelx = cv2.Sobel(img,cv2.CV_64F,1,0,ksize=5)
     sobely = cv2.Sobel(img,cv2.CV_64F,0,1,ksize=5)
     magnitude = cv2.magnitude(sobelx,sobely,grd_mat)
-    gradientAmplValue = grd_mat.sum()
-    print(grd_mat.max())
-    print(grd_mat.min())
+    gradientAmplValue = grd_mat.sum()//10000
     images[gradientAmplValue] = imagePathName
     print(imagePathName)
     print(gradientAmplValue)
@@ -60,7 +56,6 @@ def findFocus(imagePathName,showPlot = False):
         plt.subplot(2,2,4),plt.imshow(sobely,cmap = 'gray')
         plt.title('Sobel Y'), plt.xticks([]), plt.yticks([])
         
-
         return plt.show()
     
 
@@ -74,14 +69,14 @@ def showBestFocusImage(bestGradientValue):
 
 def detectBestFocusImage(event):
     minGradientAmplValue = next(iter(images.keys()))
-    getAverage()
+    getAverageGradientValue()
     for key in images.keys():
         if key <= minGradientAmplValue:
             minGradientAmplValue = key
             showBestFocusImage(minGradientAmplValue)           
 bestBtn.on_clicked(detectBestFocusImage)
 
-def getAverage():
+def getAverageGradientValue():
     average = 0
     sum = 0
     for key in images.keys():
@@ -89,3 +84,5 @@ def getAverage():
     average = sum//len(images.keys())
 
     print(average)
+
+
