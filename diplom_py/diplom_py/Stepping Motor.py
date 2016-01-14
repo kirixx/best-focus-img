@@ -3,14 +3,12 @@ import numpy as np
 import sys
 from msvcrt import getch
 from matplotlib import pyplot as plt
-from matplotlib.widgets import Button
+
 
 import findFocusImage
 import main as app
 
 imageNames = findFocusImage.imageNames
-
-
 
 #step UP to control the stepper motor
 def stepUp(event):
@@ -42,12 +40,7 @@ def plotConfigure():
    plt.cla()
    plt.clf()
    plt.axis("off")
-   upAx = plt.axes([0.9, 0.02, 0.02, 0.04])
-   upBtn = Button(nextAx, '+', color='lightgoldenrodyellow', hovercolor='0.975')
-   downAx = plt.axes([0.88, 0.02, 0.02, 0.04])
-   downBtn = Button(backAx, '-', color='lightgoldenrodyellow', hovercolor='0.975')
-   upBtn.on_clicked(stepUp)
-   downBtn.on_clicked(stepDown)
+   
    plt.show()
 
 if __name__ == "__main__": 

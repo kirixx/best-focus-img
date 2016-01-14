@@ -1,39 +1,42 @@
 ﻿import numpy as np
 import cv2
 from matplotlib import pyplot as plt
-from matplotlib.widgets import Button
 import sys
 
 images = {}
 imageNames = []
 counter = 0
 
-
-nextAx = plt.axes([0.8, 0.025, 0.1, 0.04])
-nextBtn = Button(nextAx, 'Next>', color='lightgoldenrodyellow', hovercolor='0.975')
-backAx = plt.axes([0.7, 0.025, 0.1, 0.04])
-backBtn = Button(backAx, '<Back', color='lightgoldenrodyellow', hovercolor='0.975')
-bestAx = plt.axes([0.2, 0.025, 0.12, 0.04])
-bestBtn = Button(bestAx, 'Best Focus', color='lightgoldenrodyellow', hovercolor='0.975')
-
-
-def newBack(event):
-    global counter
-    if counter != 0:
-        counter -= 1
-        print(counter)
-        findFocus(imageNames[counter],True)    
-backBtn.on_clicked(newBack) 
+def back(event):
+    if event.key == 'left':
+        global counter
+        if counter != 0:
+            counter -= 1
+            print(counter)
+            findFocus(imageNames[counter],True)  
+cid = plt.gcf().canvas.mpl_connect('key_press_event', back) 
+ 
 
         
-def newForward(event):
-    global counter
-    if counter != len(imageNames)-1:
-        counter += 1
-        print(counter)
-        findFocus(imageNames[counter],True)   
-nextBtn.on_clicked(newForward)
+def forward(event):
+    if event.key == 'right':
+        global counter
+        if counter != len(imageNames)-1:
+            counter += 1
+            print(counter)
+            findFocus(imageNames[counter],True)   
+cid = plt.gcf().canvas.mpl_connect('key_press_event', forward)
 
+
+def detectBestFocusImage(event):
+    if event.key == 'enter':
+        minGradientAmplValue = next(iter(images.keys()))
+        getAverageGradientValue()
+        for key in images.keys():
+            if key <= minGradientAmplValue:
+                minGradientAmplValue = key
+                showBestFocusImage(minGradientAmplValue)           
+cid = plt.gcf().canvas.mpl_connect('key_press_event', detectBestFocusImage)
 
 def findFocus(imagePathName,showPlot = False):
     img = cv2.imread(imagePathName,0)
@@ -67,14 +70,7 @@ def showBestFocusImage(bestGradientValue):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-def detectBestFocusImage(event):
-    minGradientAmplValue = next(iter(images.keys()))
-    getAverageGradientValue()
-    for key in images.keys():
-        if key <= minGradientAmplValue:
-            minGradientAmplValue = key
-            showBestFocusImage(minGradientAmplValue)           
-bestBtn.on_clicked(detectBestFocusImage)
+
 
 def getAverageGradientValue():
     average = 0
