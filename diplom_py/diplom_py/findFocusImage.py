@@ -37,30 +37,31 @@ def newForward(event):
 nextBtn.on_clicked(newForward)
 
 
-def findFocus(imagePathName,showPlot):
+def findFocus(imagePathName,showPlot = False):
     img = cv2.imread(imagePathName,0)
     grd_mat = img.copy()
     laplacian = cv2.Laplacian(img,cv2.CV_64F)
     sobelx = cv2.Sobel(img,cv2.CV_64F,1,0,ksize=5)
     sobely = cv2.Sobel(img,cv2.CV_64F,0,1,ksize=5)
-    cv2.magnitude(sobelx,sobely,grd_mat)
+    magnitude = cv2.magnitude(sobelx,sobely,grd_mat)
     gradientAmplValue = grd_mat.sum()
+    print(grd_mat.max())
+    print(grd_mat.min())
     images[gradientAmplValue] = imagePathName
     print(imagePathName)
     print(gradientAmplValue)
     if(showPlot == True):
         plt.subplot(2,2,1),plt.imshow(img,cmap = 'gray')
         plt.title('Original'), plt.xticks([]), plt.yticks([])   
-        plt.subplot(2,2,2),plt.imshow(laplacian,cmap = 'gray')
-        plt.title('Laplacian'), plt.xticks([]), plt.yticks([])
+        plt.subplot(2,2,2),plt.imshow(magnitude,cmap = 'gray')
+        plt.title('Magnitude'), plt.xticks([]), plt.yticks([])
         plt.subplot(2,2,3),plt.imshow(sobelx,cmap = 'gray')
         plt.title('Sobel X'), plt.xticks([]), plt.yticks([])
         plt.subplot(2,2,4),plt.imshow(sobely,cmap = 'gray')
         plt.title('Sobel Y'), plt.xticks([]), plt.yticks([])
+        
 
         return plt.show()
-    else:
-        return gradientAmplValue
     
 
 def showBestFocusImage(bestGradientValue):
@@ -73,8 +74,18 @@ def showBestFocusImage(bestGradientValue):
 
 def detectBestFocusImage(event):
     minGradientAmplValue = next(iter(images.keys()))
+    getAverage()
     for key in images.keys():
         if key <= minGradientAmplValue:
             minGradientAmplValue = key
-            showBestFocusImage(minGradientAmplValue)
+            showBestFocusImage(minGradientAmplValue)           
 bestBtn.on_clicked(detectBestFocusImage)
+
+def getAverage():
+    average = 0
+    sum = 0
+    for key in images.keys():
+        sum +=key
+    average = sum//len(images.keys())
+
+    print(average)

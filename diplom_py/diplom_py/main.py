@@ -11,7 +11,7 @@ imageNames = findFocusImage.imageNames
 
 def loadImages(pathDir):
     for file in glob.glob(pathDir):
-       findFocusImage.findFocus(file,False)
+       findFocusImage.findFocus(file)
        imageNames.append(file)
 
 if __name__ == "__main__":  
