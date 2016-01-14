@@ -10,34 +10,23 @@ import main as app
 
 imageNames = findFocusImage.imageNames
 
-'''fig = plt.figure()
-p = fig.add_subplot(111)
-p.plot(1,2)'''
+
 
 #step UP to control the stepper motor
 def stepUp(event):
-    #global img
-    img = cv2.imread(imageNames[0])
-    #plt.axis("off")
-    plt.subplot(1,1,1),plt.imshow(cv2.cvtColor(img,cv2.COLOR_BGR2RGB))
-    #plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-    plt.show()
-    '''cv2.imshow('Image',img)    
-    cv2.waitKey(0)
-    cv2.destroyWindows()'''
-
+    if event.key == 'up':
+        img = cv2.imread(imageNames[0])
+        plt.subplot(1,1,1),plt.imshow(cv2.cvtColor(img,cv2.COLOR_BGR2RGB))
+        plt.show()         
+cid = plt.gcf().canvas.mpl_connect('key_press_event', stepUp)
     
 #step Down to control the stepper motor
 def stepDown(event):
-    #global img 
-    img = cv2.imread(imageNames[1])
-    #plt.axis("off")
-    plt.subplot(1,1,1),plt.imshow(cv2.cvtColor(img,cv2.COLOR_BGR2RGB))
-    #plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-    plt.show()
-    '''cv2.imshow('Image',img)    
-    cv2.waitKey(0)
-    cv2.destroyWindows()'''
+    if event.key == 'down':
+        img = cv2.imread(imageNames[1])
+        plt.subplot(1,1,1),plt.imshow(cv2.cvtColor(img,cv2.COLOR_BGR2RGB))
+        plt.show() 
+cid = plt.gcf().canvas.mpl_connect('key_press_event', stepDown)
     
     
 
@@ -48,28 +37,20 @@ def main(argv = sys.argv):
      else:
         app.loadImages('./*.jpg') # load an images from root
 
-if __name__ == "__main__": 
-   main()
+#clean and set new plot
+def plotConfigure():
    plt.cla()
    plt.clf()
    plt.axis("off")
-   nextAx = plt.axes([0.9, 0.02, 0.02, 0.04])
-   nextBtn = Button(nextAx, '+', color='lightgoldenrodyellow', hovercolor='0.975')
-   backAx = plt.axes([0.88, 0.02, 0.02, 0.04])
-   backBtn = Button(backAx, '-', color='lightgoldenrodyellow', hovercolor='0.975')
-   nextBtn.on_clicked(stepUp)
-   backBtn.on_clicked(stepDown)
+   upAx = plt.axes([0.9, 0.02, 0.02, 0.04])
+   upBtn = Button(nextAx, '+', color='lightgoldenrodyellow', hovercolor='0.975')
+   downAx = plt.axes([0.88, 0.02, 0.02, 0.04])
+   downBtn = Button(backAx, '-', color='lightgoldenrodyellow', hovercolor='0.975')
+   upBtn.on_clicked(stepUp)
+   downBtn.on_clicked(stepDown)
    plt.show()
 
-   while True:
-        key = ord(getch())
-        if key == 224: #Special keys (arrows, f keys, ins, del, etc.)
-                key = ord(getch())
-                if key == 72: #Up arrow
-                        print(key)
-                        
-                elif key == 80: #Down arrow
-                        print(key)
-                        stepDown(True)
-        elif key == 27: #ESC      
-                break
+if __name__ == "__main__": 
+   main()
+   plotConfigure()
+   
