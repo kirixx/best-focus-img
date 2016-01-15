@@ -2,6 +2,7 @@
 import cv2
 from matplotlib import pyplot as plt
 import sys
+import collections
 
 images = {}
 imageNames = []
@@ -30,12 +31,7 @@ cid = plt.gcf().canvas.mpl_connect('key_press_event', forward)
 
 def detectBestFocusImage(event):
     if event.key == 'enter':
-        minGradientAmplValue = next(iter(images.keys()))
-        getAverageGradientValue()
-        for key in images.keys():
-            if key <= minGradientAmplValue:
-                minGradientAmplValue = key
-                showBestFocusImage(minGradientAmplValue)           
+        showBestFocusImage(getMinGradientValue())           
 cid = plt.gcf().canvas.mpl_connect('key_press_event', detectBestFocusImage)
 
 def findFocus(imagePathName,showPlot = False):
@@ -78,7 +74,42 @@ def getAverageGradientValue():
     for key in images.keys():
         sum +=key
     average = sum//len(images.keys())
+    return average
 
-    print(average)
+def getValueWithKey(key):
+    for k in images.keys():
+        if k == key:
+            return images[key]
+        else:
+            return 0
+
+def getMaxGradientValue():
+    maxGradientAmplValue = next(iter(images.keys()))
+    for key in images.keys():
+         if key >= minGradientAmplValue:
+             maxGradientAmplValue = key
+    return maxGradientAmplValue
+
+def getMinGradientValue():
+    minGradientAmplValue = next(iter(images.keys()))
+    for key in images.keys():
+         if key <= minGradientAmplValue:
+             minGradientAmplValue = key
+    return minGradientAmplValue
+
+def getDiffFromGradientValue(key,step):
+    diff = key
+    minDiff = key
+    sortDict = collections.OrderedDict(sorted(images.items()))
+    for k in sortDict.keys():
+        if k < key and step == 'UP':
+            diff = key - k
+        elif k > key and step == 'DOWN':
+            diff = k - key
+        if diff <= minDiff:
+            minDiff = diff
+    return minDiff
+
+
 
 
