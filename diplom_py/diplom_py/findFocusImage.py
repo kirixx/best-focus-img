@@ -86,7 +86,7 @@ def getValueWithKey(key):
 def getMaxGradientValue():
     maxGradientAmplValue = next(iter(images.keys()))
     for key in images.keys():
-         if key >= minGradientAmplValue:
+         if key >= maxGradientAmplValue:
              maxGradientAmplValue = key
     return maxGradientAmplValue
 
