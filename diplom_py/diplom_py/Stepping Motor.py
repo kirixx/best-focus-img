@@ -13,10 +13,10 @@ gradientValue  = 0
 nearestImage   = 0 # diff from current image to next
 step           = 1 # Stepping Motor step    
 stepNeededPrev = 0 # previous value of step nededed
-stepChecker    = True
+stepChecker    = True # check which step been last, True = up or default, False = down
 
-imageNames = findFocusImage.imageNames # image path
-image = findFocusImage.images # dict that contain image gradient value and path( gradient value = key, path = value)
+imageNames     = findFocusImage.imageNames # image path
+image          = findFocusImage.images # dict that contain image gradient value and path( gradient value = key, path = value)
 
 #step UP to control the stepper motor
 def stepUp(event):  
@@ -26,9 +26,18 @@ def stepUp(event):
         global nearestImage
         global step
         global stepChecker
+        stepNeededPrev = stepNeeded 
         if(stepNeeded == 0 and gradientValue != findFocusImage.getMinGradientValue()):
             nearestImage = findFocusImage.getDiffFromGradientValue(gradientValue,"UP")
             stepNeeded = nearestImage // step
+            print('steps',stepNeeded)
+        elif(stepNeeded != 0 and stepChecker == False):
+            nearestImage = findFocusImage.getDiffFromGradientValue(gradientValue,"UP")        
+            stepNeeded = (nearestImage // step)
+            if(stepNeeded <  stepNeededPrev):
+                stepNeeded = stepNeededPrev - stepNeeded
+            else:
+                stepNeeded -= stepNeededPrev
             print('steps',stepNeeded)
         elif gradientValue == findFocusImage.getMinGradientValue():
             gradientValue = findFocusImage.getMaxGradientValue()
@@ -36,7 +45,7 @@ def stepUp(event):
         elif stepNeeded >= 10:
             stepNeeded = stepNeeded // 2
             print('steps',stepNeeded)
-        else:
+        elif(stepChecker == True):
             stepNeeded -= 1
             print('steps',stepNeeded)
             if stepNeeded == 0  :
@@ -59,7 +68,7 @@ def stepDown(event):
             nearestImage = findFocusImage.getDiffFromGradientValue(gradientValue,"DOWN")        
             stepNeeded = (nearestImage // step)
             print('steps',stepNeeded)
-        elif(stepChecker == True):
+        elif(stepNeeded != 0 and stepChecker == True):
             nearestImage = findFocusImage.getDiffFromGradientValue(gradientValue,"DOWN")        
             stepNeeded = (nearestImage // step)
             if(stepNeeded <  stepNeededPrev):
@@ -73,7 +82,7 @@ def stepDown(event):
         elif stepNeeded >= 10:
             stepNeeded = stepNeeded // 2
             print('steps',stepNeeded)
-        else:      
+        elif(stepChecker == False):      
             stepNeeded -= 1
             print('steps',stepNeeded)
             if stepNeeded == 0  :
